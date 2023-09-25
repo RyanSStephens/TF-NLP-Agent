@@ -1,0 +1,21 @@
+ai:
+  provider: "openai"
+  model: "gpt-4"
+  api_key: "${OPENAI_API_KEY}"
+  
+terraform:
+  default_provider: "aws"
+  validate: true
+  format: true
+  
+security:
+  scan_enabled: true
+  fail_on_high: false
+  
+templates:
+  path: "./templates"
+  custom_path: "./custom-templates"
+  
+server:
+  port: 8080
+  host: "localhost" 
