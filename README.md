@@ -19,14 +19,16 @@ TF-NLP-Agent bridges the gap between infrastructure requirements expressed in na
 
 ## Quick Start
 
-### Installation
+1. **Install the CLI:**
+   ```bash
+   go install github.com/RyanSStephens/TF-NLP-Agent/cmd/agent@latest
+   ```
 
-```bash
-# Install from source
-git clone https://github.com/RyanSStephens/TF-NLP-Agent.git
-cd TF-NLP-Agent
-go build -o tf-nlp-agent ./cmd/agent
-```
+2. **Set up your configuration:**
+   ```bash
+   cp config.example.yaml config.yaml
+   # Edit config.yaml with your OpenAI API key and preferences
+   ```
 
 ### Basic Usage
 
