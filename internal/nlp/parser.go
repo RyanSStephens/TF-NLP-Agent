@@ -240,7 +240,8 @@ func (e *Engine) determineIntent(input string) string {
 		}
 	}
 
-	return "create" // Default intent
+	// Default intent if no specific action is detected
+	return "create"
 }
 
 // generateResourceName creates a resource name based on the type
