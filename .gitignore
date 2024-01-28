@@ -12,8 +12,11 @@ tf-nlp-agent.exe
 # Test binary, built with `go test -c`
 *.test
 
-# Output of the go coverage tool
+# Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
 
 # Go workspace file
 go.work
@@ -37,24 +40,34 @@ Thumbs.db
 # Terraform files
 *.tfstate
 *.tfstate.*
+*.tfvars
 .terraform/
 .terraform.lock.hcl
 
 # Configuration files with secrets
 config.yaml
-.env
-*.key
-*.pem
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build artifacts
+build/
+dist/
+bin/
+
+# Logs
+*.log
+logs/
 
 # Temporary files
 tmp/
 temp/
-*.tmp
 
-# Log files
-*.log
-logs/
+# Node modules (if using any JS tools)
+node_modules/
 
-# Build artifacts
-dist/
-build/
+# Coverage reports
+coverage.out
+coverage.html
