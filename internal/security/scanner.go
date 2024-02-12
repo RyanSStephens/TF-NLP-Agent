@@ -236,3 +236,27 @@ func (s *Scanner) AddCustomRule(rule SecurityRule) {
 func (s *Scanner) GetRules() []SecurityRule {
 	return s.rules
 }
+
+// AddAdvancedSecurityRules adds additional security rules for comprehensive scanning
+func (s *Scanner) AddAdvancedSecurityRules() {
+	additionalRules := []SecurityRule{
+		{
+			ID:          "SEC015",
+			Name:        "IAM Policy Wildcard Resources",
+			Severity:    "HIGH",
+			Pattern:     regexp.MustCompile(`"Resource":\s*"\*"`),
+			Message:     "IAM policy grants access to all resources using wildcard",
+			Remediation: "Specify explicit resource ARNs instead of using wildcards",
+		},
+		{
+			ID:          "SEC016",
+			Name:        "Unencrypted SNS Topic",
+			Severity:    "MEDIUM",
+			Pattern:     regexp.MustCompile(`resource\s+"aws_sns_topic"`),
+			Message:     "SNS topic may not have encryption enabled",
+			Remediation: "Enable KMS encryption for SNS topics",
+		},
+	}
+
+	s.rules = append(s.rules, additionalRules...)
+}
