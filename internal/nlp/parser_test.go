@@ -78,3 +78,72 @@ func TestDetectCloudProvider(t *testing.T) {
 		}
 	}
 }
+
+func TestExtractResources(t *testing.T) {
+	engine := NewEngine()
+
+	tests := []struct {
+		name     string
+		input    string
+		expected []string // resource types
+	}{
+		{
+			name:     "VPC and database",
+			input:    "create vpc with mysql database",
+			expected: []string{"network", "database"},
+		},
+		{
+			name:     "Compute instances",
+			input:    "deploy ec2 instances with load balancer",
+			expected: []string{"compute", "network"},
+		},
+		{
+			name:     "Storage bucket",
+			input:    "create s3 bucket for file storage",
+			expected: []string{"storage"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resources := engine.extractResources(tt.input)
+
+			if len(resources) != len(tt.expected) {
+				t.Errorf("extractResources(%q) returned %d resources, want %d",
+					tt.input, len(resources), len(tt.expected))
+				return
+			}
+
+			for i, resource := range resources {
+				if resource.Type != tt.expected[i] {
+					t.Errorf("extractResources(%q)[%d].Type = %v, want %v",
+						tt.input, i, resource.Type, tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestDetermineIntent(t *testing.T) {
+	engine := NewEngine()
+
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"create new vpc", "create"},
+		{"build infrastructure", "create"},
+		{"update existing database", "modify"},
+		{"scale the application", "modify"},
+		{"delete old resources", "delete"},
+		{"remove the vpc", "delete"},
+		{"setup monitoring", "create"}, // default
+	}
+
+	for _, tt := range tests {
+		result := engine.determineIntent(tt.input)
+		if result != tt.expected {
+			t.Errorf("determineIntent(%q) = %v, want %v", tt.input, result, tt.expected)
+		}
+	}
+}
