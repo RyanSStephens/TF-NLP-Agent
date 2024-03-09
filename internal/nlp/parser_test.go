@@ -68,7 +68,7 @@ func TestDetectCloudProvider(t *testing.T) {
 		{"create aws vpc", "aws"},
 		{"azure virtual machine", "azure"},
 		{"google cloud storage", "google"},
-		{"random infrastructure", "aws"}, // default
+		{"random infrastructure", "aws"}, // default fallback
 	}
 
 	for _, tt := range tests {
