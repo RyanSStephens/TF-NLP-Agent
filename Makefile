@@ -1,56 +1,95 @@
-.PHONY: build test clean run serve install deps
+.PHONY: build test clean install lint fmt vet security docker-build docker-run help build-all
 
-# Variables
+# Go parameters
+GOCMD=go
+GOBUILD=$(GOCMD) build
+GOCLEAN=$(GOCMD) clean
+GOTEST=$(GOCMD) test
+GOGET=$(GOCMD) get
+GOMOD=$(GOCMD) mod
+GOFMT=gofmt
+GOVET=$(GOCMD) vet
+
+# Binary names
 BINARY_NAME=tf-nlp-agent
-VERSION=1.0.0
+BINARY_UNIX=$(BINARY_NAME)_unix
+BINARY_WINDOWS=$(BINARY_NAME).exe
+BINARY_DARWIN=$(BINARY_NAME)_darwin
+
+# Build directory
 BUILD_DIR=build
 
-# Build the application
+# Default target
+all: test build
+
+## Build the binary
 build:
-	go build -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/agent
+	$(GOBUILD) -o $(BUILD_DIR)/$(BINARY_NAME) -v ./cmd/agent
 
-# Run tests
+## Build for all platforms
+build-all: build-linux build-windows build-darwin
+
+## Build for Linux
+build-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BUILD_DIR)/$(BINARY_UNIX) -v ./cmd/agent
+
+## Build for Windows
+build-windows:
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GOBUILD) -o $(BUILD_DIR)/$(BINARY_WINDOWS) -v ./cmd/agent
+
+## Build for macOS
+build-darwin:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(GOBUILD) -o $(BUILD_DIR)/$(BINARY_DARWIN) -v ./cmd/agent
+
+## Run tests
 test:
-	go test -v ./...
+	$(GOTEST) -v -race -coverprofile=coverage.out ./...
 
-# Clean build artifacts
+## Run tests with coverage report
+test-coverage: test
+	$(GOCMD) tool cover -html=coverage.out -o coverage.html
+	@echo "Coverage report generated: coverage.html"
+
+## Clean build artifacts
 clean:
+	$(GOCLEAN)
 	rm -rf $(BUILD_DIR)
-	go clean
+	rm -f coverage.out coverage.html
 
-# Run the CLI application
-run:
-	go run ./cmd/agent
+## Install dependencies
+install:
+	$(GOMOD) download
+	$(GOMOD) tidy
 
-# Start the web server
-serve:
-	go run ./cmd/agent serve
-
-# Install dependencies
-deps:
-	go mod download
-	go mod tidy
-
-# Build for multiple platforms
-build-all:
-	GOOS=linux GOARCH=amd64 go build -o $(BUILD_DIR)/$(BINARY_NAME)-linux-amd64 ./cmd/agent
-	GOOS=windows GOARCH=amd64 go build -o $(BUILD_DIR)/$(BINARY_NAME)-windows-amd64.exe ./cmd/agent
-	GOOS=darwin GOARCH=amd64 go build -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-amd64 ./cmd/agent
-
-# Format code
-fmt:
-	go fmt ./...
-
-# Lint code
+## Run linter
 lint:
 	golangci-lint run
 
-# Generate example configurations
-examples:
-	mkdir -p examples
-	./$(BUILD_DIR)/$(BINARY_NAME) generate "Create an AWS VPC with public and private subnets" -o examples/vpc.tf
-	./$(BUILD_DIR)/$(BINARY_NAME) generate "Deploy a web application with load balancer and database" -o examples/webapp.tf
+## Format code
+fmt:
+	$(GOFMT) -s -w .
 
-# Install the binary
-install: build
-	cp $(BUILD_DIR)/$(BINARY_NAME) /usr/local/bin/ 
+## Run go vet
+vet:
+	$(GOVET) ./...
+
+## Run security scanner
+security:
+	gosec ./...
+
+## Build Docker image
+docker-build:
+	docker build -t tf-nlp-agent .
+
+## Run Docker container
+docker-run:
+	docker run -p 8080:8080 tf-nlp-agent
+
+## Show help
+help:
+	@echo ''
+	@echo 'Usage:'
+	@echo '  make [target]'
+	@echo ''
+	@echo 'Targets:'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) 
