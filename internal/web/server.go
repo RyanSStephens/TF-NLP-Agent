@@ -60,10 +60,23 @@ func (s *Server) setupRoutes() {
 		api.GET("/health", s.handleHealth)
 	}
 
-	// Static files and web interface
+	// Serve static files (if any)
 	s.router.Static("/static", "./web/static")
-	s.router.LoadHTMLGlob("web/templates/*")
-	s.router.GET("/", s.handleIndex)
+
+	// CORS middleware for cross-origin requests
+	s.router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	})
 }
 
 // handleGenerate handles Terraform configuration generation
