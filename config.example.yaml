@@ -29,6 +29,7 @@ server:
   host: "localhost"
   cors_enabled: true
   rate_limit: 100  # requests per minute
+  log_level: "info"  # Log level: debug, info, warn, error
 
 templates:
   path: "./templates"
