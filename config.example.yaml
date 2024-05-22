@@ -1,21 +1,35 @@
+# TF-NLP-Agent Configuration
+# Copy this file to config.yaml and customize for your environment
+
+# AI Provider Configuration
 ai:
-  provider: "openai"
-  model: "gpt-4"
-  api_key: "${OPENAI_API_KEY}"
-  
+  provider: "openai"  # Currently only OpenAI is supported
+  model: "gpt-4"     # Use gpt-4 for best results, gpt-3.5-turbo for faster/cheaper
+  api_key: "${OPENAI_API_KEY}"  # Set via environment variable
+  timeout: 30s       # API request timeout
+  max_tokens: 2048   # Maximum tokens for responses
+
+# Terraform Configuration
 terraform:
-  default_provider: "aws"
-  validate: true
-  format: true
-  
+  default_provider: "aws"  # Default cloud provider (aws, azure, gcp)
+  validate: true          # Validate generated configurations
+  format: true            # Format output with terraform fmt
+  output_dir: "./output"  # Directory for generated files
+
+# Security Scanning
 security:
-  scan_enabled: true
-  fail_on_high: false
-  
-templates:
-  path: "./templates"
-  custom_path: "./custom-templates"
-  
+  enabled: true          # Enable security scanning
+  fail_on_high: true     # Fail on high severity issues
+  fail_on_medium: false  # Allow medium severity issues
+  custom_rules: []       # Path to custom security rules
+
+# Web Server Configuration
 server:
   port: 8080
-  host: "localhost" 
+  host: "localhost"
+  cors_enabled: true
+  rate_limit: 100  # requests per minute
+
+templates:
+  path: "./templates"
+  custom_path: "./custom-templates" 
