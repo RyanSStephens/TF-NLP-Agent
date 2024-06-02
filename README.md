@@ -37,6 +37,9 @@ TF-NLP-Agent bridges the gap between infrastructure requirements expressed in na
 # Generate Terraform config from natural language
 ./tf-nlp-agent generate "Create an AWS VPC with public and private subnets"
 
+# Validate generated configuration
+./tf-nlp-agent validate output.tf
+
 # Start web server
 ./tf-nlp-agent serve --port 8080
 ```
