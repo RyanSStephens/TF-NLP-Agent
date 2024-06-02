@@ -8,14 +8,14 @@ TF-NLP-Agent bridges the gap between infrastructure requirements expressed in na
 
 ## Features
 
-- **Natural Language Processing**: Convert plain English descriptions into Terraform configurations
-- **Multi-Provider Support**: AWS, Azure, GCP, and more
-- **Security Best Practices**: Built-in security scanning and recommendations
-- **Template System**: Extensible template library for common infrastructure patterns
-- **Web Interface**: User-friendly web UI for interactive configuration generation
-- **CLI Tool**: Command-line interface for automation and scripting
-- **Validation**: Automatic syntax and logic validation of generated configurations
-- **Cost Estimation**: Approximate cost analysis for generated infrastructure
+- **Natural Language Processing**: Parse infrastructure requirements from plain English
+- **Multi-Cloud Support**: Generate configurations for AWS, Azure, and Google Cloud
+- **Security Scanning**: Built-in security analysis with comprehensive rule set
+- **Web Interface**: REST API and web UI for easy integration
+- **CLI Tool**: Command-line interface for automation and CI/CD pipelines
+- **Terraform Validation**: Syntax and logical validation of generated configurations
+- **Template System**: Extensible template system for custom resource types
+- **Configuration Management**: YAML-based configuration with environment support
 
 ## Quick Start
 
@@ -100,33 +100,17 @@ Output: Terraform configuration for:
 
 ## Architecture
 
+The TF-NLP-Agent follows a modular architecture:
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web UI        │    │   CLI Tool      │    │   API Server    │
-│   (Frontend)    │    │                 │    │                 │
-└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
-          │                      │                      │
-          └──────────────────────┼──────────────────────┘
-                                 │
-                    ┌────────────▼────────────┐
-                    │     NLP Engine          │
-                    │   (Text Processing)     │
-                    └────────────┬────────────┘
-                                 │
-                    ┌────────────▼────────────┐
-                    │    AI Provider          │
-                    │  (OpenAI/Anthropic)     │
-                    └────────────┬────────────┘
-                                 │
-                    ┌────────────▼────────────┐
-                    │  Template Engine        │
-                    │  (HCL Generation)       │
-                    └────────────┬────────────┘
-                                 │
-                    ┌────────────▼────────────┐
-                    │  Validation Engine      │
-                    │  (Security & Syntax)    │
-                    └─────────────────────────┘
+│   NLP Parser    │───▶│   AI Provider   │───▶│ Terraform Gen   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ Security Scanner│    │  Web Interface  │    │   CLI Tool      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## Development
