@@ -13,7 +13,6 @@ import (
 // Provider represents an AI provider interface
 type Provider interface {
 	GenerateConfig(parsed *nlp.ParsedInput) (string, error)
-	GenerateTerraform(input *nlp.ParsedInput) (string, error)
 }
 
 // OpenAIProvider implements the Provider interface for OpenAI
@@ -132,30 +131,4 @@ func extractTerraformCode(content string) string {
 	}
 
 	return content
-}
-
-// GenerateTerraform creates Terraform configuration from parsed input
-func (p *OpenAIProvider) GenerateTerraform(input *nlp.ParsedInput) (string, error) {
-	if input == nil {
-		return "", fmt.Errorf("input cannot be nil")
-	}
-
-	// Create context for AI generation
-	context := p.buildContext(input)
-
-	// Generate configuration using AI
-	config, err := p.generateWithAI(context)
-	if err != nil {
-		return "", fmt.Errorf("failed to generate configuration: %w", err)
-	}
-
-	// Validate and format the generated configuration
-	formattedConfig, err := p.validateAndFormat(config)
-	if err != nil {
-		// Log error but don't fail completely - return raw config
-		fmt.Printf("Warning: Failed to format configuration: %v\n", err)
-		return config, nil
-	}
-
-	return formattedConfig, nil
 }
