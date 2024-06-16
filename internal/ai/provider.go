@@ -43,36 +43,46 @@ func NewOpenAIProvider() *OpenAIProvider {
 	}
 }
 
-// GenerateConfig generates Terraform configuration using OpenAI
+// GenerateConfig creates Terraform configuration from parsed natural language input
 func (p *OpenAIProvider) GenerateConfig(parsed *nlp.ParsedInput) (string, error) {
-	prompt := buildPrompt(parsed)
+	if parsed == nil {
+		return "", fmt.Errorf("parsed input cannot be nil")
+	}
 
-	resp, err := p.client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+	if p.client == nil {
+		return "", fmt.Errorf("OpenAI client not initialized")
+	}
+
+	// Build the prompt for the AI model
+	prompt := p.buildPrompt(parsed)
+
+	// Make the API call to OpenAI
+	response, err := p.client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
 		Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
-			openai.SystemMessage("You are a Terraform expert. Generate clean, secure, and production-ready Terraform configurations based on user requirements. Always include proper resource naming, tags, and security best practices."),
 			openai.UserMessage(prompt),
 		}),
 		Model: openai.F(p.model),
 	})
 
 	if err != nil {
-		return "", fmt.Errorf("OpenAI API error: %w", err)
+		return "", fmt.Errorf("failed to call OpenAI API: %w", err)
 	}
 
-	if len(resp.Choices) == 0 {
-		return "", fmt.Errorf("no response from OpenAI")
+	if len(response.Choices) == 0 {
+		return "", fmt.Errorf("no response choices returned from OpenAI")
 	}
 
-	content := resp.Choices[0].Message.Content
+	// Extract the generated Terraform configuration
+	content := response.Choices[0].Message.Content
 
-	// Extract Terraform code from response (remove markdown formatting if present)
-	terraformCode := extractTerraformCode(content)
+	// Clean up the response (remove markdown formatting if present)
+	content = p.cleanResponse(content)
 
-	return terraformCode, nil
+	return content, nil
 }
 
 // buildPrompt constructs the prompt for the AI model
-func buildPrompt(parsed *nlp.ParsedInput) string {
+func (p *OpenAIProvider) buildPrompt(parsed *nlp.ParsedInput) string {
 	var prompt strings.Builder
 
 	prompt.WriteString("Generate a Terraform configuration based on the following requirements:\n\n")
@@ -107,8 +117,8 @@ func buildPrompt(parsed *nlp.ParsedInput) string {
 	return prompt.String()
 }
 
-// extractTerraformCode extracts Terraform code from AI response
-func extractTerraformCode(content string) string {
+// cleanResponse cleans up the response from OpenAI
+func (p *OpenAIProvider) cleanResponse(content string) string {
 	// Remove markdown code blocks if present
 	if strings.Contains(content, "```") {
 		lines := strings.Split(content, "\n")
