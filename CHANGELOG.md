@@ -5,26 +5,74 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-12-15
+## [Unreleased]
 
 ### Added
-- Complete CLI application with generate, serve, and validate commands
-- Web server with REST API endpoints
-- Natural language processing engine for infrastructure requirements
-- AI integration with OpenAI for Terraform generation
-- Security scanner with comprehensive rule set
-- Terraform configuration validation and formatting
-- Cost estimation for generated infrastructure
-- Example configurations and templates
+- Comprehensive unit tests for NLP parser functionality
+- Enhanced configuration file with detailed documentation
+- Advanced security rules for IAM and SNS resources
+- CORS middleware for web API cross-origin requests
 
 ### Changed
-- Improved error handling across all components
-- Enhanced security scanning with contextual analysis
-- Better prompt engineering for AI generation
+- Improved error handling in OpenAI provider
+- Simplified AWS VPC example configuration
+- Enhanced Makefile with cross-platform build targets
+
+### Fixed
+- Removed duplicate return statement in intent detection
+- Updated installation instructions in README
+- Fixed API route grouping in web server
+
+## [1.2.0] - 2023-11-15
+
+### Added
+- Comprehensive CI/CD pipeline with GitHub Actions
+- Multi-matrix Go version testing (1.20, 1.21)
+- Security scanning with Gosec integration
+- Automated Docker image building and publishing
+- Test coverage reporting with Codecov
+- Cross-platform build artifacts
+
+### Changed
+- Enhanced build automation with improved Makefile
+- Updated Docker configuration with health checks
+- Improved documentation structure and examples
+
+## [1.1.0] - 2023-09-30
+
+### Added
+- Docker support for containerized deployment
+- Multi-stage Dockerfile for optimized builds
+- Docker Compose configuration with Redis and Nginx
+- Health checks for all services
+- Non-root user configuration for security
+
+### Changed
+- Enhanced configuration management
+- Improved template system
+- Updated examples with better practices
+
+## [1.0.0] - 2023-07-12
+
+### Added
+- Complete web server implementation with REST API
+- CLI application with Cobra framework
+- Terraform generator and validation engine
+- Security scanner with comprehensive rules
+- AI provider integration for configuration generation
+- NLP engine for natural language parsing
+- Build automation with Makefile
+- Comprehensive documentation and examples
+
+### Changed
+- Migrated to Go modules for dependency management
+- Improved project structure and organization
+- Enhanced error handling throughout the application
 
 ### Security
-- Added comprehensive security rules for AWS resources
-- Implemented security issue reporting with remediation suggestions
+- Implemented security scanning for generated configurations
+- Added input validation and sanitization
+- Configured secure defaults for all components
 
 ## [0.9.0] - 2024-10-20
 
@@ -114,18 +162,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved project structure
 - Better separation of concerns
 
-## [0.1.0] - 2023-06-01
+## [0.1.0] - 2022-03-15
 
 ### Added
-- Initial project structure
-- CLI framework with Cobra
-- Basic web server with Gin
-
-### Security
-- Initial security scanning implementation
-
-## [0.0.1] - 2022-03-15
-
-### Added
-- Initial commit with MIT license
-- Project repository setup 
+- Initial project setup
+- Basic project structure
+- MIT license
+- Initial documentation 
