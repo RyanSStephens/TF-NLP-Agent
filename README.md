@@ -148,7 +148,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Roadmap
 
-- [ ] Support for more cloud providers (Oracle Cloud, DigitalOcean)
+- [ ] Support for additional cloud providers (Oracle Cloud, DigitalOcean)
 - [ ] Integration with Terraform Cloud
 - [ ] Cost optimization suggestions
 - [ ] Infrastructure drift detection
